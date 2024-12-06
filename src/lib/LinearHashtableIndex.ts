@@ -41,10 +41,10 @@ class Bucket {
 	}
 }
 
-class LinearHashIndex {
+export class LinearHashIndex {
 	private readonly N: number; // Initial number of buckets
 	private readonly maxBucketSize: number;
-	private level: number;	// Current round
+	private level: number; // Current round
 	private next: number;
 	private buckets: Bucket[];
 
@@ -162,23 +162,12 @@ class LinearHashIndex {
 	getBuckets(): number[][] {
 		return this.buckets.map((bucket) => bucket.getAllKeys());
 	}
+
+	getLevel(): number {
+		return this.level;
+	}
+
+	getNext(): number {
+		return this.next;
+	}
 }
-
-
-
-const hashIndex = new LinearHashIndex(2, 0, 0, 4);
-
-// Insert keys
-hashIndex.insert(10);
-hashIndex.insert(20);
-hashIndex.insert(30);
-hashIndex.insert(40);
-hashIndex.insert(50); // Triggers overflow and a split
-hashIndex.insert(60);
-
-// Search keys
-console.log(hashIndex.search(10)); // true
-console.log(hashIndex.search(70)); // false
-
-// Display buckets
-console.log(hashIndex.getBuckets());

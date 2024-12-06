@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { LinearHashtable } from '$lib/LinearHashtable';
+	import { LinearHashIndex } from '$lib/LinearHashtableIndex';
 	import { writable } from 'svelte/store';
 	import Modal from '$lib/Modal.svelte';
 
-	const hashtableStore = writable(new LinearHashtable());
+	const lhi = writable(new LinearHashIndex());
 
 	let key = $state(0);
 	let showModal = $state(false);
@@ -56,7 +56,7 @@
 			onkeydown={(event: KeyboardEvent) => {
 				if (event.key === 'Enter') {
 					// Update the hashtable reactively
-					hashtableStore.update((hashtable) => {
+					lhi.update((hashtable) => {
 						hashtable.insert(key);
 						return hashtable; // Trigger reactivity by reassigning
 					});
@@ -71,7 +71,7 @@
 			class="px-3 py-2 border font-medium border-gray-300 rounded bg-blue-200"
 			onclick={() => {
 				// Update the hashtable reactively
-				hashtableStore.update((hashtable) => {
+				lhi.update((hashtable) => {
 					hashtable.insert(key);
 					return hashtable; // Trigger reactivity by reassigning
 				});
@@ -112,7 +112,7 @@
 
 			<!-- Info Level -->
 			<div class="flex items-center justify-center gap-8 text-gray-700 text-sm font-medium text-center">
-				<span>Level = {$hashtableStore.getLevel()}</span>
+				<span>Level = {$lhi.getLevel()}</span>
 			</div>
 
 			<!-- Info N -->
@@ -123,7 +123,7 @@
 
 		</div>
 
-		{#each $hashtableStore.getBuckets() as bucket, i}
+		{#each $lhi.getBuckets() as bucket, i}
 			<div class="grid grid-cols-[100px_100px_1fr_1fr] gap-4 items-center p-3">
 
 				<!-- Hash Functions -->
@@ -134,7 +134,7 @@
 
 				<!-- Next Pointer -->
 				<div class="flex items-center justify-center">
-					{#if i === $hashtableStore.getNext()}
+					{#if i === $lhi.getNext()}
 						<span class="flex gap-2 text-xs font-bold px-2 py-1 bg-blue-100 text-blue-700 rounded">
 							<span>Next</span>
 							<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path
