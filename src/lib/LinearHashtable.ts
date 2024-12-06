@@ -1,6 +1,8 @@
+import { writable } from 'svelte/store';
+
 type Bucket = number[];
 
-export class LinearHashtable {
+class LinearHashtable {
 	private level: number; // Current round number
 	private next: number; // Next bucket to split
 	private N: number; // Number of buckets
@@ -71,5 +73,13 @@ export class LinearHashtable {
 	getBuckets(): Bucket[] {
 		return this.buckets;
 	}
+
+	getNext(): number {
+		return this.next;
+	}
 }
 
+
+
+// Wrap the entire LinearHashtable instance in a writable store
+export const hashtableStore = writable(new LinearHashtable());
