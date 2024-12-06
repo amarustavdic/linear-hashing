@@ -75,4 +75,12 @@ export class LinearHashtable {
 	getNext(): number {
 		return this.next;
 	}
+
+	getLevel(): number {
+		return this.level;
+	}
+
+	getN(): number {
+		return this.N;
+	}
 }
