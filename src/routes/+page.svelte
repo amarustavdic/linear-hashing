@@ -3,7 +3,6 @@
 
 	const table = new LinearHashtable();
 
-	let buckets = $state(table.getBuckets());
 	let key = $state(0);
 </script>
 
@@ -30,7 +29,7 @@
 		</button>
 	</div>
 
-	{#each buckets as bucket}
+	{#each table.getBuckets() as bucket}
 		{bucket.toString()}
 	{/each}
 </div>

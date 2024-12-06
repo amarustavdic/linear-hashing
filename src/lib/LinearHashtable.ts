@@ -73,12 +73,3 @@ export class LinearHashtable {
 	}
 }
 
-const hashTable = new LinearHashtable(2, 4);
-hashTable.insert(1);
-hashTable.insert(5);
-hashTable.insert(9);
-hashTable.insert(13); // Should trigger a split
-hashTable.insert(17); // Continue inserting
-hashTable.insert(19); // Should trigger another split
-
-console.log(hashTable.getBuckets())
