@@ -117,7 +117,7 @@
 
 			<!-- Info N -->
 			<div class="flex items-center justify-center gap-8 text-gray-700 text-sm font-medium text-center">
-				<span>N = {$hashtableStore.getN()}</span>
+				<span>N = 4</span>
 			</div>
 
 
