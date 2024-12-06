@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { hashtableStore } from '$lib/LinearHashtable';
+	import { LinearHashtable } from '$lib/LinearHashtable';
+	import { writable } from 'svelte/store';
+
+	const hashtableStore = writable(new LinearHashtable());
 
 	let key = $state(0);
 </script>
@@ -39,9 +42,9 @@
 	</div>
 
 
-	<div class="grid gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
+	<div class="grid bg-white rounded">
 		{#each $hashtableStore.getBuckets() as bucket, i}
-			<div class="grid grid-cols-[100px_100px_1fr_2fr] gap-4 items-center p-3 bg-white border border-gray-300 rounded-lg shadow-sm">
+			<div class="grid grid-cols-[100px_100px_1fr_1fr] gap-4 items-center p-3">
 
 				<!-- Hash Functions -->
 				<div class="text-gray-700 text-sm font-medium text-center">
@@ -51,7 +54,7 @@
 				<!-- Next Pointer -->
 				<div class="flex items-center justify-center">
 					{#if i === $hashtableStore.getNext()}
-						<span class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">Next →</span>
+						<span class="text-xs font-bold px-2 py-1 bg-blue-100 text-blue-700 rounded">Next →</span>
 					{/if}
 				</div>
 
@@ -59,7 +62,7 @@
 				<div class="flex flex-wrap items-center gap-2 bg-gray-50 border border-gray-300 p-2 rounded">
 					{#if bucket.slice(0, 4).length > 0}
 						{#each bucket.slice(0, 4) as item}
-						<span class="inline-block px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded">
+						<span class="inline-block px-3 py-1 text-xs font-bold text-white bg-blue-500 rounded">
 							{item}
 						</span>
 						{/each}
@@ -72,7 +75,7 @@
 				<div class="flex flex-wrap items-center gap-2 bg-red-50 border border-gray-300 p-2 rounded">
 					{#if bucket.slice(4).length > 0}
 						{#each bucket.slice(4) as item}
-						<span class="inline-block px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded">
+						<span class="inline-block px-3 py-1 text-xs font-bold text-red-700 bg-red-100 rounded">
 							{item}
 						</span>
 						{/each}
