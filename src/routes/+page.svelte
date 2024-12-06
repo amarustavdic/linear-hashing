@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { LinearHashtable } from '$lib/LinearHashtable';
 	import { writable } from 'svelte/store';
+	import Modal from '$lib/Modal.svelte';
 
 	const hashtableStore = writable(new LinearHashtable());
 
 	let key = $state(0);
+	let showModal = $state(false);
 
 
 	const bits = (i: number, take: number): string => {
@@ -12,7 +14,38 @@
 		const last = b.slice(-take);
 		return last.padStart(take, '0');
 	};
+
+
+	function initializeTable(json: string) {
+		try {
+			const data = JSON.parse(json);
+
+			// Validate JSON structure
+			if (!Array.isArray(data.buckets) || typeof data.next !== 'number' || typeof data.level !== 'number') {
+				throw new Error('Invalid JSON structure');
+			}
+
+			// Create a new LinearHashtable instance
+			hashtableStore.set(
+				Object.assign(new LinearHashtable(), {
+					buckets: data.buckets,
+					next: data.next,
+					level: data.level,
+				})
+			);
+		} catch (error) {
+			alert('Invalid JSON. Please check your input and try again.');
+		}
+	}
 </script>
+
+<!-- Modal Component -->
+<Modal
+	isOpen={showModal}
+	onClose={() => (showModal = false)}
+	onSubmit={initializeTable}
+/>
+
 
 <div class="flex flex-col gap-8 items-center justify-center w-screen h-screen bg-zinc-200">
 
@@ -32,10 +65,10 @@
 			}}
 			bind:value={key}
 			placeholder="Enter a key"
-			class="border border-gray-300 p-2 rounded"
+			class="border border-gray-300 p-2 rounded max-w-24"
 		>
 		<button
-			class="px-3 py-2 border border-gray-300 rounded"
+			class="px-3 py-2 border font-medium border-gray-300 rounded bg-blue-200"
 			onclick={() => {
 				// Update the hashtable reactively
 				hashtableStore.update((hashtable) => {
@@ -46,6 +79,25 @@
 			}}
 		>insert
 		</button>
+
+		<!-- Set initial state -->
+		<button
+			onclick={() => showModal = true}
+			class="px-3 py-2 border font-medium border-gray-300 rounded bg-green-200"
+		>
+			initialize
+		</button>
+
+		<!-- Overlay -->
+		<div>
+			<!-- Modal -->
+			<div>
+
+
+
+			</div>
+		</div>
+
 	</div>
 
 
