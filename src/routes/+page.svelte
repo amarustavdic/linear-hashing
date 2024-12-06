@@ -26,13 +26,7 @@
 			}
 
 			// Create a new LinearHashtable instance
-			hashtableStore.set(
-				Object.assign(new LinearHashtable(), {
-					buckets: data.buckets,
-					next: data.next,
-					level: data.level,
-				})
-			);
+			lhi.set(new LinearHashIndex(data));
 		} catch (error) {
 			alert('Invalid JSON. Please check your input and try again.');
 		}

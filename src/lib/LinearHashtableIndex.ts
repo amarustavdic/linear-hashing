@@ -1,3 +1,15 @@
+interface BucketData {
+	keys: number[]; // An array of numbers representing the keys in the bucket
+}
+
+interface LinearHashIndexData {
+	buckets: BucketData[]; // An array of BucketData objects
+	next: number;          // The next bucket to split
+	level: number;         // The current level of hashing
+	N: number;             // Initial number of buckets (must be a power of 2)
+	maxBucketSize: number; // Maximum size of a bucket before splitting or overflow
+}
+
 class Bucket {
 	private keys: number[];
 	private overflow: Bucket | null;
@@ -48,7 +60,23 @@ export class LinearHashIndex {
 	private next: number;
 	private buckets: Bucket[];
 
-	constructor(N = 2, level = 0, next = 0, maxBucketSize = 4) {
+	constructor(
+		data: {
+			buckets?: number[];
+			next?: number;
+			level?: number;
+			N?: number;
+			maxBucketSize?: number;
+		} = {}
+	) {
+		const {
+			buckets = [], // Default: empty array for buckets
+			next = 0, // Default: 0 for next
+			level = 0, // Default: 0 for level
+			N = 2, // Default: 2 for initial number of buckets
+			maxBucketSize = 4 // Default: 4 for bucket size
+		} = data;
+
 		// Ensure N is a power of 2 and non-negative
 		if (N <= 0 || (N & (N - 1)) !== 0) {
 			throw new Error('N must be a positive power of 2.');
@@ -64,9 +92,9 @@ export class LinearHashIndex {
 			throw new Error('next must be non-negative.');
 		}
 
-		// Ensure maxBucketSize is non-negative
-		if (maxBucketSize < 0) {
-			throw new Error('maxBucketSize must be non-negative.');
+		// Ensure maxBucketSize is positive
+		if (maxBucketSize <= 0) {
+			throw new Error('maxBucketSize must be greater than 0.');
 		}
 
 		this.N = N;
@@ -74,8 +102,17 @@ export class LinearHashIndex {
 		this.next = next;
 		this.maxBucketSize = maxBucketSize;
 
-		// Initialize N initial buckets
-		this.buckets = Array.from({ length: this.N }, () => new Bucket());
+		// Initialize buckets
+		this.buckets =
+			buckets.length > 0
+				? buckets.map((bucketData) => {
+						const bucket = new Bucket();
+						// Initialize the bucket if additional logic is required
+						// Example: populate keys in bucket from bucketData if needed
+						bucket.keys = bucketData.keys || [];
+						return bucket;
+					})
+				: Array.from({ length: this.N }, () => new Bucket()); // Default buckets
 	}
 
 	/**
@@ -171,3 +208,23 @@ export class LinearHashIndex {
 		return this.next;
 	}
 }
+
+
+
+const json = `{
+  "buckets": [
+    { "keys": [10, 20, 30] },
+    { "keys": [40, 50] },
+    { "keys": [] },
+    { "keys": [60] }
+  ],
+  "next": 1,
+  "level": 2,
+  "N": 4,
+  "maxBucketSize": 4
+}`;
+
+const data = JSON.parse(json);
+const hashtable = new LinearHashIndex(data);
+
+console.log(hashtable);
