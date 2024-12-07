@@ -207,24 +207,8 @@ export class LinearHashIndex {
 	getNext(): number {
 		return this.next;
 	}
+
+	getN(): number {
+		return this.N;
+	}
 }
-
-
-
-const json = `{
-  "buckets": [
-    { "keys": [10, 20, 30] },
-    { "keys": [40, 50] },
-    { "keys": [] },
-    { "keys": [60] }
-  ],
-  "next": 1,
-  "level": 2,
-  "N": 4,
-  "maxBucketSize": 4
-}`;
-
-const data = JSON.parse(json);
-const hashtable = new LinearHashIndex(data);
-
-console.log(hashtable);
