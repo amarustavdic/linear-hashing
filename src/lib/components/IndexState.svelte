@@ -10,6 +10,7 @@
 	let { level, n, next, buckets }: Props = $props();
 
 
+	// Binary formatter for index values
 	const bits = (i: number, take: number): string => {
 		const b = i.toString(2);
 		const last = b.slice(-take);

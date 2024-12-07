@@ -134,6 +134,12 @@ export class LinearHashIndex {
 	 * @param key - The key to insert.
 	 */
 	insert(key: number): void {
+		// Check if the key is a valid number
+		if (typeof key !== 'number' || isNaN(key)) {
+			console.warn('Invalid key: The key must be a valid number.');
+			return; // Exit the method early
+		}
+
 		// Determine the bucket index
 		let bucketIndex = this.hash(key);
 		if (bucketIndex < this.next) {
