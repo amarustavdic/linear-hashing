@@ -25,7 +25,7 @@
 
 <div class="w-screen h-screen box-border flex flex-col p-2 items-center justify-between">
 	<!-- State of Linear Hashing Index -->
-	<div class="w-full min-w-80 grid grid-cols-4 gap-2 bg-slate-200 p-2 rounded">
+	<div class="w-full min-w-80 grid grid-cols-4 gap-2 p-2 rounded">
 
 		<!-- Hint -->
 		<div class="flex gap-4 items-center justify-center">
@@ -60,7 +60,7 @@
 			</div>
 
 			<!-- Primary Pages -->
-			<div class="flex gap-2 border border-slate-400 rounded p-2">
+			<div class="flex items-center justify-start gap-2 border border-slate-400 rounded px-2 min-h-5 overflow-auto">
 				{#each bucket.entries as value}
 					<div class="">
 						{value}
@@ -69,9 +69,9 @@
 			</div>
 
 			<!-- Overflow Pages -->
-			<div class="flex gap-2 border border-slate-400 rounded p-2">
+			<div class="flex items-center justify-start gap-2 border border-slate-400 rounded px-2 min-h-5 overflow-auto">
 				{#each bucket.overflow as value}
-					<div class="overflow-hidden">
+					<div class="">
 						{value}
 					</div>
 				{/each}
