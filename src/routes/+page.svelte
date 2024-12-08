@@ -23,22 +23,46 @@
 
 </script>
 
-<div class="w-screen h-screen box-border flex flex-col p-2 items-center justify-between">
+<div class="w-screen h-screen box-border flex flex-col gap-4 p-2 items-center justify-start">
+
+	<!-- Project Info -->
+	<div class="w-full p-4 bg-blue-100 rounded shadow">
+		<h1 class="text-3xl font-bold mb-2 text-blue-700">Linear Hashing Index</h1>
+		<p class="text-base text-blue-700">
+			This tool helps you understand how the dynamic Linear Hashing algorithm works,
+			particularly in database systems. You can explore how data is distributed across buckets,
+			how overflows are managed, and how splits occur incrementally.
+		</p>
+		<ul class="list-disc list-inside mt-4 text-blue-700 text-sm">
+			<li>Insert numbers to populate the hash table.</li>
+			<li>View primary and overflow pages of buckets.</li>
+			<li>Visualize bucket splits and level changes.</li>
+		</ul>
+	</div>
+
+
 	<!-- State of Linear Hashing Index -->
-	<div class="w-full min-w-80 grid grid-cols-4 gap-2 p-2 rounded">
+	<div class="w-full min-w-80 grid grid-cols-4 gap-2 p-2 rounded bg-zinc-200">
 
 		<!-- Hint -->
 		<div class="flex gap-4 items-center justify-center">
 			<div>h(1)</div>
 			<div>h(0)</div>
 		</div>
-		<div class="flex items-center justify-center">
-			Level = {metadata.level}
+		<div class="flex gap-2 items-center justify-center">
+			<span>
+				L: {metadata.level}
+			</span>
+			<span>
+				N: {metadata.N}
+			</span>
 		</div>
-		<div class="flex items-center justify-start">
-			N = {metadata.N}
+		<div class="flex items-center justify-center font-medium text-sm">
+			PRIMARY
 		</div>
-		<div></div>
+		<div class="flex items-center justify-center font-medium text-sm">
+			OVERFLOW
+		</div>
 
 		{#each data.buckets as bucket, i}
 
@@ -60,7 +84,7 @@
 			</div>
 
 			<!-- Primary Pages -->
-			<div class="flex items-center justify-start gap-2 border border-slate-400 rounded px-2 min-h-5 overflow-auto">
+			<div class="flex items-center justify-start gap-2 border border-slate-500 rounded px-2 min-h-5 overflow-auto">
 				{#each bucket.entries as value}
 					<div class="">
 						{value}
@@ -69,7 +93,7 @@
 			</div>
 
 			<!-- Overflow Pages -->
-			<div class="flex items-center justify-start gap-2 border border-slate-400 rounded px-2 min-h-5 overflow-auto">
+			<div class="flex items-center justify-start gap-2 border border-slate-500 rounded px-2 min-h-5 overflow-auto">
 				{#each bucket.overflow as value}
 					<div class="">
 						{value}
@@ -83,7 +107,7 @@
 	<!-- Controls -->
 	<div class="flex gap-2 items-center justify-between">
 		<input
-			class="border border-slate-400 rounded w-full h-full" type="number" name="" id=""
+			class="px-2 border border-slate-400 rounded w-full h-full" type="number" name="" id=""
 			bind:value={key}
 		>
 		<button
