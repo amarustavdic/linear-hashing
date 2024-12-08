@@ -1,88 +1,97 @@
 <script lang="ts">
-	import { LinearHashIndex } from '$lib/LinearHashtableIndex';
-	import { writable } from 'svelte/store';
-	import Modal from '$lib/components/Modal.svelte';
-	import IndexState from '$lib/components/IndexState.svelte';
+	import { LinearHashingIndex } from '$lib/LinearHashingIndex';
 
-	// Reactive store for LinearHashIndex
-	const lhi = writable(new LinearHashIndex());
+	const lh = new LinearHashingIndex({ N: 4 });
 
-	let key = $state(0); // Input key for insertion
-	let showModal = $state(false); // Modal visibility state
+	// Binary formatter for index values
+	const bits = (i: number, take: number): string => {
+		const b = i.toString(2);
+		const last = b.slice(-take);
+		return last.padStart(take, '0');
+	};
 
-	// Function to initialize the table from JSON input
-	function initializeTable(json: string) {
-		try {
-			const data = JSON.parse(json);
+	let metadata = $state(lh.getMetadata());
+	let data = $state(lh.getState());
 
-			// Validate JSON structure
-			if (!Array.isArray(data.buckets) || typeof data.next !== 'number' || typeof data.level !== 'number') {
-				throw new Error('Invalid JSON structure');
-			}
+	let key = $state(0);
 
-			// Set the LinearHashIndex with the parsed JSON data
-			lhi.set(new LinearHashIndex(data));
-		} catch (error) {
-			alert('Invalid JSON. Please check your input and try again.');
-		}
-	}
+	const handleInsert = () => {
+		lh.insert(key);
+		metadata = lh.getMetadata();
+		data = lh.getState();
+	};
 
-	// Function to insert keys into the hash table
-	function insertKey() {
-		lhi.update((hashtable) => {
-			hashtable.insert(key);
-			return hashtable;
-		});
-		key = 0; // Reset input field
-	}
 </script>
 
-<!-- Modal Component -->
-<Modal
-	isOpen={showModal}
-	onClose={() => (showModal = false)}
-	onSubmit={initializeTable}
-/>
+<div class="w-screen h-screen box-border flex flex-col p-2 items-center justify-between">
+	<!-- State of Linear Hashing Index -->
+	<div class="w-full min-w-80 grid grid-cols-4 gap-2 bg-slate-200 p-2 rounded">
 
-<div class="flex flex-col gap-8 items-center justify-center w-screen h-screen bg-gray-200 p-4">
-	<!-- Header Section -->
-	<div class="flex flex-col items-center gap-2">
-		<h1 class="text-2xl font-bold text-gray-800">Linear Hash Index Visualization</h1>
-		<p class="text-sm text-gray-500">
-			Dynamically visualize and interact with a Linear Hash Index.
-		</p>
+		<!-- Hint -->
+		<div class="flex gap-4 items-center justify-center">
+			<div>h(1)</div>
+			<div>h(0)</div>
+		</div>
+		<div class="flex items-center justify-center">
+			Level = {metadata.level}
+		</div>
+		<div class="flex items-center justify-start">
+			N = {metadata.N}
+		</div>
+		<div></div>
+
+		{#each data.buckets as bucket, i}
+
+			<div class="flex gap-4 items-center justify-center">
+				<div>{bits(i, 3)}</div>
+				<div>{bits(i, 2)}</div>
+			</div>
+
+			<div>
+				{#if bucket.next}
+					<div class="flex gap-2 items-center justify-center h-full">
+						<span class="font-medium">next</span>
+						<svg class="w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+							<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+										d="m18 8l4 4l-4 4M2 12h20" />
+						</svg>
+					</div>
+				{/if}
+			</div>
+
+			<!-- Primary Pages -->
+			<div class="flex gap-2 border border-slate-400 rounded p-2">
+				{#each bucket.entries as value}
+					<div class="">
+						{value}
+					</div>
+				{/each}
+			</div>
+
+			<!-- Overflow Pages -->
+			<div class="flex gap-2 border border-slate-400 rounded p-2">
+				{#each bucket.overflow as value}
+					<div class="overflow-hidden">
+						{value}
+					</div>
+				{/each}
+			</div>
+
+		{/each}
 	</div>
 
-	<!-- Key Insertion Section -->
-	<div class="flex gap-4 items-center">
+	<!-- Controls -->
+	<div class="flex gap-2 items-center justify-between">
 		<input
-			type="number"
+			class="border border-slate-400 rounded w-full h-full" type="number" name="" id=""
 			bind:value={key}
-			placeholder="Enter a key"
-			class="border border-gray-300 p-2 rounded text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-			onkeydown={(event: KeyboardEvent) => {
-                if (event.key === 'Enter') insertKey();
-            }}
 		>
 		<button
-			class="px-4 py-2 rounded bg-blue-500 text-white font-medium hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
-			onclick={insertKey}
-		>
-			Insert
+			class="bg-blue-300 flex px-4 py-2 rounded box-border font-medium"
+			onclick={handleInsert}
+		>Insert
 		</button>
-		<button
-			class="px-4 py-2 rounded bg-green-700 text-white font-medium hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300"
-			onclick={() => (showModal = true)}
-		>
-			Initialize
-		</button>
+		<button class="bg-red-300 flex px-4 py-2 rounded box-border font-medium">Delete</button>
 	</div>
 
-	<!-- Index State Visualization -->
-	<IndexState
-		level={$lhi.getLevel()}
-		n={$lhi.getN()}
-		next={$lhi.getNext()}
-		buckets={$lhi.getBuckets()}
-	/>
 </div>
