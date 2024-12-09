@@ -1,4 +1,4 @@
-type TriggerType = 'overflow' | 'capacityThreshold';
+type TriggerType = 'overflow' | 'load';
 
 export class LinearHashingIndex {
 	private readonly N: number; // Initial number of buckets
@@ -51,11 +51,15 @@ export class LinearHashingIndex {
 
 		// Trigger split based on the chosen trigger type
 		if (this.triggerType === 'overflow') {
+
 			if (bucket.length > this.maxBucketSize) {
+				console.log('overflow triggered split');
 				this.split();
 			}
-		} else if (this.triggerType === 'capacityThreshold') {
+		} else if (this.triggerType === 'load') {
 			if (this.getLoadFactor() > this.capacityThreshold) {
+
+				console.log('load triggered split', this.getLoadFactor());
 				this.split();
 			}
 		}
@@ -137,16 +141,20 @@ export class LinearHashingIndex {
 				return {
 					next: index === this.next, // Is this the next bucket to split?
 					entries,
-					overflow,
+					overflow
 				};
-			}),
+			})
 		};
 	}
 
 	getMetadata() {
 		return {
 			N: this.N,
-			level: this.level,
-		}
+			level: this.level
+		};
+	}
+
+	getLoad() {
+		return this.getLoadFactor();
 	}
 }
